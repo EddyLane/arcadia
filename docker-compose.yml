@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+
+  postgres:
+    image: postgres:13.3
+    environment:
+      - POSTGRES_USER=arcadia
+      - POSTGRES_PASSWORD=arcadia
+      - POSTGRES_DB=arcadia
+    ports:
+      - "5432:5432"
