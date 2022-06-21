@@ -6,10 +6,11 @@ import Config
 # to provide built-in test partitioning in CI environment.
 # Run `mix help test` for more information.
 config :arcadia, Arcadia.Repo,
-  username: "postgres",
-  password: "postgres",
+  username: "arcadia",
+  password: "arcadia",
   hostname: "localhost",
   database: "arcadia_test#{System.get_env("MIX_TEST_PARTITION")}",
+  port: 5433,
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: 10
 
