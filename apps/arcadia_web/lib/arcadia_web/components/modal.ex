@@ -9,41 +9,46 @@ defmodule ArcadiaWeb.Components.Modal do
 
   import ArcadiaWeb.Gettext
 
+  @doc "Unique ID that is used for the JS integrations"
+  prop id, :string, required: true
+
   @doc "Updates the URL when the modal is closed."
   prop return_to, :string, default: nil
 
-  @doc "The name"
-  prop name, :string, default: "Guest"
-
-  @doc "The subtitle"
-  prop subtitle, :string
-
-  @doc "The color"
-  prop color, :string, values!: ["danger", "info", "warning"]
+  @doc "The content of the Modal"
+  slot default, required: true
 
   def render(assigns) do
     ~F"""
-    <div id="modal" class="phx-modal fade-in" phx-remove={hide_modal()}>
+    <div id={"#{@id}-modal"} class="phx-modal fade-in" phx-remove={hide_modal(@id)}>
       <div
-        id="modal-content"
+        id={"#{@id}-modal-content"}
         class="phx-modal-content fade-in-scale"
-        phx-click-away={JS.dispatch("click", to: "#close")}
-        phx-window-keydown={JS.dispatch("click", to: "#close")}
-        phx-key="escape"
+        :on-click-away={JS.dispatch("click", to: "##{@id}-close")}
+        :on-window-keydown={JS.dispatch("click", to: "##{@id}-close")}
+        :on-key="escape"
       >
         {#if @return_to}
-          <LivePatch id="close" to={@return_to} class="phx-modal-close" label="✖" :click={hide_modal} />
+          <LivePatch
+            opts={id: "#{@id}-close"}
+            to={@return_to}
+            class="phx-modal-close"
+            label="✖"
+            :click={hide_modal(@id)}
+          />
         {#else}
-          <a id="close" href="#" class="phx-modal-close" phx-click={hide_modal()}>✖</a>
+          <a id={"#{@id}-close"} href="#" class="phx-modal-close" phx-click={hide_modal(@id)}>✖</a>
         {/if}
+
+        <#slot />
       </div>
     </div>
     """
   end
 
-  def hide_modal(js \\ %JS{}) do
+  def hide_modal(id, js \\ %JS{}) do
     js
-    |> JS.hide(transition: "fade-out", to: "#modal")
-    |> JS.hide(transition: "fade-out-scale", to: "#modal-content")
+    |> JS.hide(transition: "fade-out", to: "##{id}-modal")
+    |> JS.hide(transition: "fade-out-scale", to: "##{id}-modal-content")
   end
 end
