@@ -11,7 +11,7 @@ defmodule ArcadiaWeb.MixProject do
       lockfile: "../../mix.lock",
       elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:gettext] ++ Mix.compilers(),
+      compilers: [:gettext] ++ Mix.compilers() ++ [:surface],
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps()
@@ -24,12 +24,13 @@ defmodule ArcadiaWeb.MixProject do
   def application do
     [
       mod: {ArcadiaWeb.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :arcadia]
     ]
   end
 
   # Specifies which paths to compile per environment.
   defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(:dev), do: ["lib"] ++ catalogues()
   defp elixirc_paths(_), do: ["lib"]
 
   # Specifies your project dependencies.
@@ -51,7 +52,9 @@ defmodule ArcadiaWeb.MixProject do
       {:arcadia, in_umbrella: true},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:tailwind, "~> 0.1.6", runtime: Mix.env() == :dev}
+      {:tailwind, "~> 0.1.6", runtime: Mix.env() == :dev},
+      {:surface, "~> 0.7.4"},
+      {:surface_catalogue, "~> 0.4.0"}
     ]
   end
 
@@ -63,6 +66,12 @@ defmodule ArcadiaWeb.MixProject do
       setup: ["deps.get"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.deploy": ["esbuild default --minify", "tailwind default --minify", "phx.digest"]
+    ]
+  end
+
+  def catalogues do
+    [
+      "priv/catalogue"
     ]
   end
 end

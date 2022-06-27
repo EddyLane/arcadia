@@ -25,9 +25,11 @@ config :arcadia_web, ArcadiaWeb.Endpoint,
   code_reloader: true,
   debug_errors: true,
   secret_key_base: "0cww9lN2Bk0IoC8HZ3HaWk8ZYqsXwgPOPew9W3zYn2tSUQ5XMQXCVBOlPXj70Fgc",
+  reloadable_compilers: [:phoenix, :elixir, :surface],
   watchers: [
     # Start the esbuild watcher by calling Esbuild.install_and_run(:default, args)
     esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]},
+    esbuild: {Esbuild, :install_and_run, [:catalogue, ~w(--sourcemap=inline --watch)]},
     tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]}
   ]
 
@@ -62,7 +64,8 @@ config :arcadia_web, ArcadiaWeb.Endpoint,
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
       ~r"lib/arcadia_web/(live|views)/.*(ex)$",
-      ~r"lib/arcadia_web/templates/.*(eex)$"
+      ~r"lib/arcadia_web/templates/.*(eex)$",
+      ~r"lib/arcadia_web/(live|views|components)/.*(ex|sface|js)$"
     ]
   ]
 

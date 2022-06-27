@@ -1,6 +1,8 @@
 defmodule ArcadiaWeb.Router do
   use ArcadiaWeb, :router
 
+  import Surface.Catalogue.Router
+
   pipeline :browser do
     plug(:accepts, ["html"])
     plug(:fetch_session)
@@ -25,6 +27,7 @@ defmodule ArcadiaWeb.Router do
 
     live("/projects/:id", ProjectLive.Show, :show)
     live("/projects/:id/show/edit", ProjectLive.Show, :edit)
+    live "/demo", Demo
   end
 
   # Other scopes may use custom stacks.
@@ -58,6 +61,13 @@ defmodule ArcadiaWeb.Router do
       pipe_through(:browser)
 
       forward("/mailbox", Plug.Swoosh.MailboxPreview)
+    end
+  end
+
+  if Mix.env() == :dev do
+    scope "/" do
+      pipe_through :browser
+      surface_catalogue "/catalogue"
     end
   end
 end
